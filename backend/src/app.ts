@@ -1,9 +1,15 @@
-import express, { type Express, type Request, type Response } from 'express';
+import express, { type Express } from 'express';
+import taskRoutes from './modules/task/task.routes.ts';
+import { errorHandler } from './middleware/error.middleware.ts';
 
 const app: Express = express();
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
+app.use(express.json());
 
-app.listen(3000);
+app.use('/health', (_, res) => res.status(200).json({ message: 'OK' }));
+
+app.use('/api/tasks', taskRoutes);
+
+app.use(errorHandler);
+
+export default app;
