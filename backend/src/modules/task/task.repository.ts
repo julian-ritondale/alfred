@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../lib/prisma.ts';
 import type { CreateTaskDto, UpdateTaskDto } from './task.dto.ts';
 import type { Task } from './task.model.ts';
-
-const prisma = new PrismaClient();
 
 export class TaskRepository {
   async getTasks(): Promise<Task[]> {

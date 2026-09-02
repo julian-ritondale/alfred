@@ -6,13 +6,27 @@ datasource db {
   provider = "postgresql"
 }
 
+enum TaskStatus {
+  UNASSIGNED
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  UNASSIGNED
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model Task {
-  id          String   @id @default(uuid())
+  id          String       @id @default(uuid())
   title       String
   description String?
-  status      String   @default("pending")
-  priority    String   @default("medium")
+  status      TaskStatus   @default(UNASSIGNED)
+  priority    TaskPriority @default(UNASSIGNED)
   assignee    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }

@@ -9,13 +9,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node src/app.ts",
-    "dev": "tsc -w",
+    "start": "node src/server.ts",
+    "dev": "node --watch src/server.ts",
     "postinstall": "prisma skills sync || exit 0"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "express": "^5.2.1"
+    "@types/pg": "^8.23.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
