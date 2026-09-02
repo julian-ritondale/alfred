@@ -2,9 +2,12 @@ import type { CreateTaskDto, UpdateTaskDto, TaskDto } from './task.dto.ts';
 import { TaskRepository } from './task.repository.ts';
 import { TaskMapper } from './task.mapper.ts';
 import { NotFoundError } from '../../errors/index.ts';
+import { AiClient } from '../ai/ai.client.ts';
+import { buildSummaryPrompt } from './task.utils.ts';
 
 const taskRepository = new TaskRepository();
 const taskMapper = new TaskMapper();
+const aiClient = new AiClient();
 
 export class TaskService {
   async getTasks(): Promise<TaskDto[]> {
@@ -32,5 +35,15 @@ export class TaskService {
       throw new NotFoundError(`Task with id ${id} not found`);
     }
     await taskRepository.deleteTask(id);
+  }
+
+  async summarizeTask(id: string): Promise<string> {
+    const task = await taskRepository.getTaskById(id);
+    if (!task) {
+      throw new NotFoundError(`Task with id ${id} not found`);
+    }
+    const taskDto = taskMapper.toTaskDto(task);
+    const prompt = buildSummaryPrompt(taskDto);
+    return aiClient.generateContent(prompt);
   }
 }

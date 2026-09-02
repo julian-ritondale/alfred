@@ -27,3 +27,9 @@ export const deleteTask = async (req: Request<{ id: string }>, res: Response): P
   await taskService.deleteTask(id);
   res.status(204).send();
 };
+
+export const summarizeTask = async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const summary = await taskService.summarizeTask(id);
+  res.status(200).json({ summary });
+};

@@ -22,3 +22,9 @@ export class BadRequestError extends AppError {
     super(400, message);
   }
 }
+
+export class AiClientError extends AppError {
+  constructor(message: string = "AI client error") {
+    super(500, message);
+  }
+}
