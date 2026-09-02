@@ -1,20 +1,20 @@
-export const TASK_STATUS = {
-  UNASSIGNED: 'UNASSIGNED',
-  TODO: 'TODO',
-  IN_PROGRESS: 'IN_PROGRESS',
-  DONE: 'DONE',
-} as const;
+import { TaskStatus, TaskPriority } from '@prisma/client';
 
-export type TaskStatus = typeof TASK_STATUS[keyof typeof TASK_STATUS];
+export { TaskStatus, TaskPriority };
+
+export const TASK_STATUS = {
+  UNASSIGNED: TaskStatus.UNASSIGNED,
+  TODO: TaskStatus.TODO,
+  IN_PROGRESS: TaskStatus.IN_PROGRESS,
+  DONE: TaskStatus.DONE,
+};
 
 export const TASK_PRIORITY = {
-  UNASSIGNED: 'UNASSIGNED',
-  LOW: 'LOW',
-  MEDIUM: 'MEDIUM',
-  HIGH: 'HIGH',
-} as const;
-
-export type TaskPriority = typeof TASK_PRIORITY[keyof typeof TASK_PRIORITY];
+  UNASSIGNED: TaskPriority.UNASSIGNED,
+  LOW: TaskPriority.LOW,
+  MEDIUM: TaskPriority.MEDIUM,
+  HIGH: TaskPriority.HIGH,
+};
 
 export interface Task {
   id: string;
