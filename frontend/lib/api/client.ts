@@ -18,5 +18,9 @@ export async function apiFetch<T>(
     throw new ApiError(res.status, await res.text());
   }
 
-  return res.json();
+  const text = await res.text();
+  if (!text) {
+    return {} as T;
+  }
+  return JSON.parse(text);
 }
