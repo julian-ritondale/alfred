@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { ChevronDown, X } from "lucide-react";
-import { createTask, updateTask } from "../../lib/api/task";
+import { ChevronDown, X, Sparkles } from "lucide-react";
+import { createTask, updateTask, summarizeTask } from "../../lib/api/task";
 import { Task, TaskStatus, TaskPriority } from "../types/task";
 
 interface TaskFormProps {
@@ -16,6 +16,9 @@ export default function TaskForm({ onClose, onSaved, initialTask }: TaskFormProp
   const [priority, setPriority] = useState<TaskPriority>(initialTask?.priority || "UNASSIGNED");
   const [assignee, setAssignee] = useState(initialTask?.assignee || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [summary, setSummary] = useState<string | null>(null);
+  const [isSummarizing, setIsSummarizing] = useState(false);
 
   useEffect(() => {
     if (initialTask) {
@@ -54,22 +57,61 @@ export default function TaskForm({ onClose, onSaved, initialTask }: TaskFormProp
     }
   };
 
+  const handleSummarize = async () => {
+    if (!initialTask) return;
+    setIsSummarizing(true);
+    setSummary(null);
+    try {
+      const res = await summarizeTask(initialTask.id);
+      setSummary(res.summary);
+    } catch (error) {
+      console.error("Failed to summarize task", error);
+      setSummary("Failed to generate summary.");
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
   const isEditing = !!initialTask;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-xl rounded-2xl border border-zinc-800 bg-[#121214] p-8 shadow-2xl">
+      <div className="w-full max-w-xl rounded-2xl border border-zinc-800 bg-[#121214] p-8 shadow-2xl relative">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight text-zinc-100">
             {isEditing ? "Edit Task" : "Create New Task"}
           </h2>
-          <button
-            onClick={onClose}
-            className="rounded-full p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
-          >
-            <X size={20} />
-          </button>
+          <div className="flex items-center gap-2">
+            {isEditing && (
+              <button
+                type="button"
+                onClick={handleSummarize}
+                disabled={isSummarizing}
+                className="flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1.5 text-sm font-medium text-indigo-400 transition-colors hover:bg-indigo-500/20 hover:text-indigo-300 disabled:opacity-50"
+              >
+                <Sparkles size={16} />
+                {isSummarizing ? "Summarizing..." : "AI Summary"}
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              type="button"
+              className="rounded-full p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
+
+        {summary && (
+          <div className="mb-6 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-4 text-sm text-indigo-200 shadow-inner">
+            <div className="mb-2 flex items-center gap-2 font-semibold text-indigo-300">
+              <Sparkles size={16} />
+              AI Summary
+            </div>
+            <p className="leading-relaxed whitespace-pre-wrap">{summary}</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div>
