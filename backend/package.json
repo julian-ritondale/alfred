@@ -8,10 +8,10 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node src/server.ts",
     "dev": "node --watch src/server.ts",
-    "postinstall": "prisma skills sync || exit 0"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
