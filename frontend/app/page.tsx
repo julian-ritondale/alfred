@@ -1,18 +1,19 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { AlertCircle, Calendar, Tag, User } from "lucide-react";
+import { AlertCircle, Tag, User } from "lucide-react";
 
 import Button from "./components/Button";
 import Pill from "./components/Pill";
 import SearchBar from "./components/SearchBar";
 import TaskRow from "./components/TaskRow";
-import NewTaskForm from "./components/NewTaskForm";
+import TaskForm from "./components/TaskForm";
 import { getTasks } from "../lib/api/task";
 import { Task } from "./types/task";
 
 export default function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,9 +33,25 @@ export default function Home() {
     fetchTasks();
   }, [fetchTasks]);
 
-  const handleTaskCreated = () => {
+  const handleTaskSaved = () => {
     setIsFormOpen(false);
+    setSelectedTask(undefined);
     fetchTasks();
+  };
+
+  const handleOpenCreate = () => {
+    setSelectedTask(undefined);
+    setIsFormOpen(true);
+  };
+
+  const handleOpenEdit = (task: Task) => {
+    setSelectedTask(task);
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setSelectedTask(undefined);
   };
 
   return (
@@ -44,7 +61,7 @@ export default function Home() {
           <div className="text-sm text-zinc-100"></div>
           <div className="flex w-full items-center gap-3">
             <SearchBar />
-            <Button onClick={() => setIsFormOpen(true)} />
+            <Button onClick={handleOpenCreate} />
           </div>
           <div></div>
         </header>
@@ -55,7 +72,11 @@ export default function Home() {
             <div className="text-center text-zinc-500 py-10">No tasks found. Create one!</div>
           ) : (
             tasks.map((task) => (
-              <TaskRow key={task.id} title={task.title}>
+              <TaskRow 
+                key={task.id} 
+                title={task.title}
+                onClick={() => handleOpenEdit(task)}
+              >
                 {task.priority !== "UNASSIGNED" && (
                   <Pill title={task.priority} icon={AlertCircle} />
                 )}
@@ -69,7 +90,13 @@ export default function Home() {
             ))
           )}
         </div>
-        {isFormOpen && <NewTaskForm onClose={() => setIsFormOpen(false)} onCreated={handleTaskCreated} />}
+        {isFormOpen && (
+          <TaskForm 
+            onClose={handleCloseForm} 
+            onSaved={handleTaskSaved} 
+            initialTask={selectedTask}
+          />
+        )}
       </main>
     </div>
   );
