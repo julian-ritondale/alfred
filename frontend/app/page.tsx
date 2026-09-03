@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { AlertCircle, Tag, User, Filter } from "lucide-react";
+import { AlertCircle, Tag, User, Filter, Sparkles } from "lucide-react";
 
 import Button from "./components/Button";
 import Pill from "./components/Pill";
@@ -92,7 +92,14 @@ export default function Home() {
     <div className="flex h-screen bg-[#0e0e11] font-sans dark:bg-[#0e0e11]">
       <main className="flex flex-1 flex-col overflow-y-auto">
         <header className="sticky top-0 z-10 grid w-full grid-cols-3 items-center border-b border-zinc-800/40 bg-[#0e0e11]/80 px-8 py-4 backdrop-blur-md">
-          <div className="text-sm text-zinc-100 font-semibold tracking-tight">Tasks</div>
+          <div className="flex items-center gap-3 whitespace-nowrap">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+              <Sparkles size={18} />
+            </div>
+            <div className="text-sm text-zinc-100 tracking-tight">
+              Alfred
+            </div>
+          </div>
           <div className="flex w-full items-center gap-3">
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
             <Button onClick={handleOpenCreate} />
