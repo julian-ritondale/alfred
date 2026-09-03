@@ -8,7 +8,7 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate && prisma migrate deploy && tsc",
     "start": "node src/server.ts",
     "dev": "node --watch src/server.ts",
     "postinstall": "prisma generate"
